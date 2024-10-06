@@ -181,6 +181,7 @@ def main():
         base_url = base_url.replace("{$$}", end_date)
         page_url = base_url + f"&start={start}"
         new_papers = []
+        print("page_url", page_url)
         info = get_paper_info(page_url)
         print("get_paper_info(page_url) length", len(info))
         for each in info:
