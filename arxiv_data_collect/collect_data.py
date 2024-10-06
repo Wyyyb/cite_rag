@@ -176,8 +176,9 @@ def main():
         if page >= 49:
             end_date = convert_date_format(new_papers[-1]["submission_date"])
             print("update end date to ", end_date)
-            base_url = base_url.replace("{$$}", end_date)
+            # base_url = base_url.replace("{$$}", end_date)
             page = 0
+        base_url = base_url.replace("{$$}", end_date)
         page_url = base_url + f"&start={start}"
         new_papers = []
         info = get_paper_info(page_url)
