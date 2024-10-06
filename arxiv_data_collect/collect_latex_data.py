@@ -32,8 +32,9 @@ def download_and_extract(eprint_id, target_folder):
             os.remove(file_path)  # 解压成功后删除原压缩包
         else:
             # 如果不是压缩文件，则删除
-            os.remove(file_path)
-            print(f"Deleted non-archive file: {eprint_id}")
+            # os.remove(file_path)
+            # print(f"Deleted non-archive file: {eprint_id}")
+            print(eprint_id, "non-archive file", file_path)
 
         print(f"Successfully processed: {eprint_id}")
     except Exception as e:
