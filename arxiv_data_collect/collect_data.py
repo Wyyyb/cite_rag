@@ -11,6 +11,7 @@ import shutil
 import json
 import multiprocessing
 from functools import partial
+from datetime import datetime
 
 
 def contains_latex_files(directory):
@@ -129,15 +130,25 @@ def get_latex_data(eprint_id, target_folder):
         return None
 
 
+def convert_date_format(date_string):
+    # 将输入的日期字符串解析为datetime对象
+    date_object = datetime.strptime(date_string, "%d %B, %Y")
+
+    # 将datetime对象格式化为所需的输出格式
+    formatted_date = date_object.strftime("%Y-%m-%d")
+
+    return formatted_date
+
+
 def main():
-    # 主程序
-    base_url = "https://arxiv.org/search/advanced?advanced=&terms-0-operator=AND&terms-0-term=&terms-0-field=paper_id&terms-1-operator=AND&terms-1-term=&terms-1-field=all&classification-computer_science=y&classification-physics_archives=all&classification-include_cross_list=include&date-filter_by=all_dates&date-year=&date-from_date=&date-to_date=&date-date_type=submitted_date&abstracts=show&size=200&order=-announced_date_first"
+    end_date = "2024-09-04"
+    base_url = "https://arxiv.org/search/advanced?advanced=&terms-0-operator=AND&terms-0-term=&terms-0-field=paper_id&terms-1-operator=AND&terms-1-term=&terms-1-field=all&classification-computer_science=y&classification-physics_archives=all&classification-include_cross_list=include&date-year=&date-filter_by=date_range&date-from_date=&date-to_date={$$}&date-date_type=submitted_date&abstracts=show&size=200&order=-announced_date_first"
     total_results = get_total_results(base_url + "&start=0")
     print("Total results", total_results)
     pages = math.ceil(total_results / 200)
     all_papers = {}
     # 指定进程数，例如使用8个进程
-    num_processes = 6  # 你可以根据需要更改这个数字
+    num_processes = 16  # 你可以根据需要更改这个数字
     pool = multiprocessing.Pool(processes=num_processes)
     latex_dir = "latex_data"
 
@@ -154,11 +165,18 @@ def main():
         if k not in exist_id:
             continue
         temp[k] = v
-    print("cleaned meta data")
+    print("cleaned meta data length", len(temp))
+    all_papers = temp
+    page = 0
 
-    for page in tqdm(range(pages)):
+    while page < 50:
         start = page * 200
         print(f"Crawling page {page + 1}/{pages}, start={start}")
+        if page >= 49:
+            end_date = convert_date_format(new_papers[-1]["submission_date"])
+            print("update end date to ", end_date)
+            base_url = base_url.replace("{$$}", end_date)
+            page = 0
         page_url = base_url + f"&start={start}"
         new_papers = []
         for each in get_paper_info(page_url):
@@ -171,6 +189,7 @@ def main():
         process_paper_partial = partial(process_paper, latex_dir=latex_dir)
         pool.map(process_paper_partial, new_papers)
         # time.sleep(2)  # 等待三秒以避免对服务器造成过大压力
+        page += 1
 
 
 if __name__ == "__main__":
