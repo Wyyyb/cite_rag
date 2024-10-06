@@ -160,6 +160,7 @@ def main():
     for file in os.listdir(latex_dir):
         if os.path.isdir(file):
             exist_id.append(file)
+    print("exist_id number", len(exist_id))
     temp = {}
     for k, v in all_papers.items():
         if k not in exist_id:
@@ -179,7 +180,9 @@ def main():
             page = 0
         page_url = base_url + f"&start={start}"
         new_papers = []
-        for each in get_paper_info(page_url):
+        info = get_paper_info(page_url)
+        print("get_paper_info(page_url) length", len(info))
+        for each in info:
             if each["eprint_id"] not in all_papers:
                 all_papers[each["eprint_id"]] = each
                 new_papers.append(each)
