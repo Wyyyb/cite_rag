@@ -141,6 +141,7 @@ def convert_date_format(date_string):
 
 
 def main():
+    # end_date = "2024-09-04"
     end_date = "2024-09-04"
     base_url = "https://arxiv.org/search/advanced?advanced=&terms-0-operator=AND&terms-0-term=&terms-0-field=paper_id&terms-1-operator=AND&terms-1-term=&terms-1-field=all&classification-computer_science=y&classification-physics_archives=all&classification-include_cross_list=include&date-year=&date-filter_by=date_range&date-from_date=&date-to_date={$$}&date-date_type=submitted_date&abstracts=show&size=200&order=-announced_date_first"
     total_results = get_total_results(base_url + "&start=0")
@@ -148,7 +149,7 @@ def main():
     pages = math.ceil(total_results / 200)
     all_papers = {}
     # 指定进程数，例如使用8个进程
-    num_processes = 16  # 你可以根据需要更改这个数字
+    num_processes = 6  # 你可以根据需要更改这个数字
     pool = multiprocessing.Pool(processes=num_processes)
     latex_dir = "latex_data"
 
