@@ -194,7 +194,7 @@ def main():
             fo.write(json.dumps(all_papers, indent=2))
         process_paper_partial = partial(process_paper, latex_dir=latex_dir)
         pool.map(process_paper_partial, new_papers)
-        # time.sleep(2)  # 等待三秒以避免对服务器造成过大压力
+        time.sleep(5)  # 等待以避免对服务器造成过大压力
         page += 1
 
 
