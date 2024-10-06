@@ -59,7 +59,7 @@ def download():
     exist_ids = []
     for file in os.listdir(target_folder):
         if os.path.isdir(os.path.join(target_folder, file)):
-            print("exist file", file)
+            # print("exist file", file)
             exist_ids.append(file)
     for file in os.listdir(input_dir):
         if not file.endswith(".json"):
@@ -69,8 +69,8 @@ def download():
             for k, v in curr.items():
                 if k not in exist_ids:
                     eprint_id_list.append(k)
-                else:
-                    print("skip it")
+                # else:
+                #     print("skip it")
     multi_process_download(eprint_id_list, target_folder)
 
 
