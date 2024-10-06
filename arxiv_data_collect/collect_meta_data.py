@@ -74,9 +74,9 @@ def main():
     ori_base_url = "https://arxiv.org/search/advanced?advanced=&terms-0-operator=AND&terms-0-term=&terms-0-field=paper_id&terms-1-operator=AND&terms-1-term=&terms-1-field=all&classification-computer_science=y&classification-physics_archives=all&classification-include_cross_list=include&date-year=&date-filter_by=date_range&date-from_date=&date-to_date={$$}&date-date_type=submitted_date&abstracts=show&size=200&order=-announced_date_first"
     all_papers = {}
 
-    data_path = "data/arxiv_data_collection_1006.json"
-    if os.path.exists(data_path):
-        with open(data_path, "r") as fi:
+    ori_data_path = "data/arxiv_data_collection_1006.json"
+    if os.path.exists(ori_data_path):
+        with open(ori_data_path, "r") as fi:
             all_papers = json.load(fi)
     new_papers = []
     for k, v in all_papers.items():
@@ -100,12 +100,14 @@ def main():
                 all_papers[each["eprint_id"]] = each
                 new_papers.append(each)
         if len(all_papers) > 30000:
-            prev, post = split_dict(all_papers, 30000)
-            all_papers = post
-            code = int(data_path.split(".json")[0].split("_")[-1])
-            code += 1
-            data_path = f"data/arxiv_data_collection_{str(code)}.json"
-        with open(data_path, "w") as fo:
+            res_list = split_dict(all_papers, 30000)
+            code = int(ori_data_path.split(".json")[0].split("_")[-1])
+            for res in res_list:
+                code += 1
+                data_path = f"data/arxiv_data_collection_{str(code)}.json"
+                with open(data_path, "w") as fo:
+                    fo.write(json.dumps(res, indent=2))
+        with open(ori_data_path, "w") as fo:
             fo.write(json.dumps(all_papers, indent=2))
         time.sleep(3)  # 等待以避免对服务器造成过大压力
         page += 1
@@ -120,16 +122,22 @@ def sort_dict(input_dict):
     return res
 
 
-def split_dict(input_dict, index):
+def split_dict(input_dict, step):
     keys = list(input_dict.keys())
     keys = sorted(keys, reverse=True)
-    prev = {}
-    post = {}
-    for i in range(index):
-        prev[keys[i]] = input_dict[keys[i]]
-    for i in range(index, len(keys)):
-        post[keys[i]] = input_dict[keys[i]]
-    return prev, post
+    i = 0
+    res = []
+    while i < len(keys):
+        curr = {}
+        if i + step < len(keys):
+            end = i + step
+        else:
+            end = len(keys)
+        for j in range(i, end):
+            curr[keys[j]] = input_dict[keys[j]]
+        res.append(curr)
+        i += step
+    return res
 
 
 if __name__ == "__main__":

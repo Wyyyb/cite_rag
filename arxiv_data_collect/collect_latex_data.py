@@ -6,11 +6,13 @@ import multiprocessing
 import shutil
 from concurrent.futures import ProcessPoolExecutor
 import json
+import time
 
 
 def download_and_extract(eprint_id, target_folder):
     url = f"https://arxiv.org/src/{eprint_id}"
     file_path = os.path.join(target_folder, f"{eprint_id}.tar.gz")
+    time.sleep(1)
 
     try:
         # 下载文件
