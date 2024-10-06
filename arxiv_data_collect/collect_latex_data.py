@@ -58,7 +58,7 @@ def download():
     target_folder = "latex_data"
     exist_ids = []
     for file in os.listdir(target_folder):
-        if os.path.isdir(file):
+        if os.path.isdir(os.path.join(target_folder, file)):
             print("exist file", file)
             exist_ids.append(file)
     for file in os.listdir(input_dir):
