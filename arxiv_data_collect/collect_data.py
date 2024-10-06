@@ -62,11 +62,13 @@ def process_paper(paper, latex_dir):
     process_name = current_process.name
     process_id = current_process._identity[0]
 
-    print(f"Process {process_name} (PID: {pid}, ID: {process_id}) processing paper: {paper['eprint_id']}")
+    # print(f"Process {process_name} (PID: {pid}, ID: {process_id}) processing paper: {paper['eprint_id']}")
     get_latex_data(paper["eprint_id"], latex_dir)
 
 
 def get_latex_data(eprint_id, target_folder):
+    if os.path.exists(os.path.join(target_folder, eprint_id)):
+        return None
     url = f"https://arxiv.org/src/{eprint_id}"
     # Create the target folder if it doesn't exist
     os.makedirs(target_folder, exist_ok=True)
@@ -137,11 +139,22 @@ def main():
     # 指定进程数，例如使用8个进程
     num_processes = 6  # 你可以根据需要更改这个数字
     pool = multiprocessing.Pool(processes=num_processes)
+    latex_dir = "latex_data"
 
     data_path = "data/arxiv_data_collection.json"
     if os.path.exists(data_path):
         with open(data_path, "r") as fi:
             all_papers = json.load(fi)
+    exist_id = []
+    for file in os.listdir(latex_dir):
+        if os.path.isdir(file):
+            exist_id.append(file)
+    temp = {}
+    for k, v in all_papers.items():
+        if k not in exist_id:
+            continue
+        temp[k] = v
+    print("cleaned meta data")
 
     for page in tqdm(range(pages)):
         start = page * 200
@@ -155,7 +168,7 @@ def main():
         # 使用多进程并行处理新论文
         with open(data_path, "w") as fo:
             fo.write(json.dumps(all_papers, indent=2))
-        process_paper_partial = partial(process_paper, latex_dir="latex_data")
+        process_paper_partial = partial(process_paper, latex_dir=latex_dir)
         pool.map(process_paper_partial, new_papers)
         # time.sleep(2)  # 等待三秒以避免对服务器造成过大压力
 
