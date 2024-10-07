@@ -70,7 +70,7 @@ def convert_date_format(date_string):
 
 def main():
     # end_date = "2024-09-30"
-    end_date = "2023-11-30"
+    end_date = "2023-09-09"
     ori_base_url = "https://arxiv.org/search/advanced?advanced=&terms-0-operator=AND&terms-0-term=&terms-0-field=paper_id&terms-1-operator=AND&terms-1-term=&terms-1-field=all&classification-computer_science=y&classification-physics_archives=all&classification-include_cross_list=include&date-year=&date-filter_by=date_range&date-from_date=&date-to_date={$$}&date-date_type=submitted_date&abstracts=show&size=200&order=-announced_date_first"
     all_papers = {}
 
