@@ -57,7 +57,7 @@ def multi_process_download(eprint_id_list, target_folder, num_processes=6):
 
 def download():
     eprint_id_list = []
-    input_dir = "data"
+    input_dir = "temp_data"
     target_folder = "latex_data"
     exist_ids = []
     for file in os.listdir(target_folder):
