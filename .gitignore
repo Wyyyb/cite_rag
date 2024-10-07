@@ -1,6 +1,7 @@
 local/
 arxiv_data_collect/data/arxiv_data_collection_1006.json
-
+arxiv_data_collect/data_bk
+arxiv_data_collect/meta_data/meta_data_collection_1007.json
 
 
 
