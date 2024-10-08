@@ -52,13 +52,20 @@ def multi_process_download(eprint_id_list, target_folder, num_processes=6):
 
 def download():
     eprint_id_list = []
-    input_dir = "data"
-    target_folder = "latex_data"
+    input_dir = "meta_data"
+    # target_folder = "latex_data"
+    target_folder = "latex_data_part_2"
+    os.makedirs(target_folder, exist_ok=True)
     exist_ids = []
     for file in os.listdir(target_folder):
         if os.path.isdir(os.path.join(target_folder, file)):
             # print("exist file", file)
             exist_ids.append(file)
+    with open("downloaded_files.json", "r") as fi:
+        temp = json.load(fi)
+    for k, v in temp.items():
+        if v:
+            exist_ids.append(k)
     for file in os.listdir(input_dir):
         if not file.endswith(".json"):
             continue
