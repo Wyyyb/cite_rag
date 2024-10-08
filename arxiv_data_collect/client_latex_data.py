@@ -66,6 +66,7 @@ def download():
     for k, v in temp.items():
         if v:
             exist_ids.append(k)
+    print("length of exist ids", len(exist_ids))
     for file in os.listdir(input_dir):
         if not file.endswith(".json"):
             continue
